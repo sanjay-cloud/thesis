@@ -2,21 +2,11 @@ import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
 
 def mixed_integer_euclidean_distances(xp, integer_indices):
-    """
-    Calculate pairwise Euclidean distances for mixed-integer variables.
-    
-    xp: np.ndarray, shape (n_samples, n_features)
-        Input points.
-    integer_indices: list of int
-        Indices of integer variables.
-    """
     xp = xp.copy()
     xp[:, integer_indices] = np.round(xp[:, integer_indices])
     return euclidean_distances(xp)
 
 def calcRHS(U,d2):
-    # print("calcRHS")
-
     if U.ndim == 1:
         rhs = np.append(U,np.zeros(d2))
     elif U.ndim == 2:
@@ -27,7 +17,6 @@ def calcRHS(U,d2):
     return rhs
 
 def svdInv(M):
-    # print("svdInv")
 
     eps = 1E-14
     u,s,v = np.linalg.svd(M)
@@ -81,7 +70,6 @@ def trainRBF(phi, U, ptail=True, squares=False, xp=None, rho=0.0):
          
     @seealso   trainGaussRBF, predict.RBFinter, interpRBF
     '''    
-    # print("trainRBF")
 
     npts = len(xp)
     d2 = None
@@ -116,7 +104,6 @@ def trainRBF(phi, U, ptail=True, squares=False, xp=None, rho=0.0):
     return rbfmodel
 
 def trainCubicRBF(xp, U, integer_indices=None, ptail=True, squares=False, rho=0.0):
-    # print("trainCubicRBF")
     if integer_indices is None:
         integer_indices = []
     edist = mixed_integer_euclidean_distances(xp, integer_indices)
@@ -127,7 +114,6 @@ def trainCubicRBF(xp, U, integer_indices=None, ptail=True, squares=False, rho=0.
     return rbfmodel
 
 def distLine(x, xp, integer_indices=None):
-    # print("distline", x.shape, xp.shape)
     z = np.outer(np.ones(len(xp)), x) - xp
     if integer_indices is not None:
         z[:, integer_indices] = np.round(z[:, integer_indices])
@@ -148,7 +134,6 @@ def interpRBF(x, rbfModel):
     
     seealso   trainCubicRBF, predict.RBFinter
     '''
-    # print("interpRBF", x)
     if x.shape[1] != len(rbfModel['xp'][0]):
         raise ValueError('Problem in interpRBF, length of vector and rbf model do not match')
     
@@ -191,20 +176,19 @@ def predictRBFinter(rbfModel, newdata):
      
     seealso   trainCubicRBF, trainGaussRBF, interpRBF
     '''
-    print("predict ", newdata)
 
     val = [interpRBF(i, rbfModel) for i in newdata]
     return(val)
 
 
-# Example usage:
-xp = np.array([[1, 2.5, 3], [2, 3.5, 4], [3, 4.5, 5]])
-U = np.array([10, 20, 30])
-integer_indices = [0, 2]
+def run_rbf_surr():
+    xp = np.array([[1, 2.5, 3], [2, 3.5, 4], [3, 4.5, 5]])
+    U = np.array([10, 20, 30])
+    integer_indices = [0, 2]
 
-rbfmodel = trainCubicRBF(xp, U, integer_indices)
-print(rbfmodel)
-newdata = np.asmatrix([[3, 3.5, 4]])
-predictions = predictRBFinter(rbfmodel, newdata)
+    rbfmodel = trainCubicRBF(xp, U, integer_indices)
+    print(rbfmodel)
+    newdata = np.asmatrix([[3, 3.5, 4]])
+    predictions = predictRBFinter(rbfmodel, newdata)
 
-print(predictions)
+    print(predictions)

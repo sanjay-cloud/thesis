@@ -2,18 +2,18 @@ import numpy as np
 
 class MixedIntegerOptimizer:
     def __init__(self, obj_func, max_eval=np.inf, lower=None, upper=None, minimize=True, mu=50, lambda_=10, integer_indices = [], verbose=False, constraints_fun = None):
-        self.obj_func = obj_func  # Objective function
-        self.max_eval = max_eval  # Maximum evaluations
-        self.lower = np.array(lower)  # Lower bounds
-        self.upper = np.array(upper)  # Upper bounds
-        self.mu = mu  # Population size
-        self.lambda_ = lambda_  # Number of offspring
-        self.eval_count = 0  # Counter for evaluations
-        self.iter_count = 0  # Counter for iterations
-        self.minimize = minimize  # Optimization goal
-        self.verbose = verbose  # Verbosity flag
-        self.curr_gen = 1  # Current generation
-        self.integer_indices = integer_indices # Indices of integer variables
+        self.obj_func = obj_func  
+        self.max_eval = max_eval  
+        self.lower = np.array(lower)  
+        self.upper = np.array(upper) 
+        self.mu = mu  
+        self.lambda_ = lambda_  
+        self.eval_count = 0  
+        self.iter_count = 0  
+        self.minimize = minimize  
+        self.verbose = verbose  
+        self.curr_gen = 1  
+        self.integer_indices = integer_indices 
         # self.initial_pop = self.generate_pop(pop_size=self.mu)
         self.constraints_fun = constraints_fun
 
@@ -40,7 +40,6 @@ class MixedIntegerOptimizer:
             if np.random.rand() < 0.5:  # Mutation probability
                 individual[i] = np.round(np.random.uniform(self.lower[i], self.upper[i]))
 
-        # Enforce bounds
         individual = np.clip(individual, self.lower, self.upper)
         return individual
 
